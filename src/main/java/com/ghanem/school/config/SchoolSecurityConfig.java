@@ -23,8 +23,11 @@ public class SchoolSecurityConfig {
 //        http.authorizeHttpRequests((requests) -> requests.requestMatchers(PathRequest.toH2Console()).permitAll());
 
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/dashboard").authenticated());
-        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/displayMessages").hasRole("ADMIN"));
+        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/displayMessages/**").hasRole("ADMIN"));
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/closeMsg/**").hasRole("ADMIN"));
+        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/closeMsg/**").hasRole("ADMIN"));
+        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/admin/**").hasRole("ADMIN"));
+        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/student/**").hasRole("STUDENT"));
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/displayProfile").permitAll());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/updateProfile").permitAll());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/login").permitAll());
