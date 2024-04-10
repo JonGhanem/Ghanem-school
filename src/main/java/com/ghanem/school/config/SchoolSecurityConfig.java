@@ -2,6 +2,7 @@ package com.ghanem.school.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,24 +23,31 @@ public class SchoolSecurityConfig {
 //        http.authorizeHttpRequests((requests) -> requests.anyRequest().denyAll());
 //        http.authorizeHttpRequests((requests) -> requests.requestMatchers(PathRequest.toH2Console()).permitAll());
 
+        http.csrf(csrf -> csrf
+                .ignoringRequestMatchers("/saveMsg")
+                .ignoringRequestMatchers("/public/**")
+                .ignoringRequestMatchers("/api/**")
+        );
+
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/dashboard").authenticated());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/displayMessages/**").hasRole("ADMIN"));
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/closeMsg/**").hasRole("ADMIN"));
-        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/closeMsg/**").hasRole("ADMIN"));
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/admin/**").hasRole("ADMIN"));
-        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/student/**").hasRole("STUDENT"));
+        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/api/**").authenticated());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/displayProfile").permitAll());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/updateProfile").permitAll());
-        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/login").permitAll());
+        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/student/**").hasRole("STUDENT"));
+
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/","/home").permitAll());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/holidays/**").permitAll());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/contact").permitAll());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/saveMsg").permitAll());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/courses").permitAll());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/about").permitAll());
+        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/assets/**").permitAll());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/logout").permitAll());
         http.authorizeHttpRequests((requests) -> requests.requestMatchers("/public/**").permitAll());
-        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/assets/**").permitAll());
+        http.authorizeHttpRequests((requests) -> requests.requestMatchers("/login").permitAll());
         http.formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/dashboard")
@@ -53,13 +61,15 @@ public class SchoolSecurityConfig {
                 .permitAll()
                 );
 
+        http.httpBasic(httpSecurityHttpBasicConfigurer -> Customizer.withDefaults());
+
 
 //        To disable the protection comes from the front end request if not thymeleaf
 //        http.csrf(csrf -> csrf.disable());
 //        http.csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()));
 //      http.headers(header ->header.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()));
 
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers("/public/**"));
+
 
 
         return http.build();

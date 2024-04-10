@@ -14,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
 @Controller
 @Slf4j
 public class ContactController {
@@ -73,9 +75,9 @@ public class ContactController {
     }
 
 
-    @RequestMapping(value = "/closeMsg",method = RequestMethod.GET)
-    public String closeMsg(@RequestParam int id){
+    @RequestMapping(value = "/closeMsg",method = GET)
+    public String closeMsg(@RequestParam int id) {
         contactService.updateMsgStatus(id);
-        return "redirect:/displayMessages";
+        return "redirect:/displayMessages/page/1?sortField=name&sortDir=desc";
     }
 }
